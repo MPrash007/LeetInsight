@@ -38,7 +38,7 @@ A modern full-stack web app that analyzes any LeetCode user's profile and displa
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/LeetInsight.git
+git clone https://github.com/MPrash007/LeetInsight.git
 cd LeetInsight
 
 # Install frontend dependencies
