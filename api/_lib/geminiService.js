@@ -1,14 +1,12 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize the API only if the key is present
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
-
 export async function generateDeepInsights(userData) {
-    if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
         throw new Error("GEMINI_API_KEY is not configured on the server.");
     }
-
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Prepare data summary to send to the model to reduce token usage
