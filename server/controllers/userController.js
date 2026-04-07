@@ -63,6 +63,33 @@ export async function getUserData(req, res) {
 
         const submissionCalendar = calendar || {};
 
+        const calendarKeys = Object.keys(submissionCalendar || {});
+        let streak = 0;
+        if (calendarKeys.length > 0) {
+            const timestamps = calendarKeys.map(Number);
+            const activeDays = new Set(
+                timestamps.map(ts => {
+                    const d = new Date(ts * 1000);
+                    return `${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}`;
+                })
+            );
+
+            const today = new Date();
+            let current = new Date(today);
+            let dateStr = `${current.getUTCFullYear()}-${current.getUTCMonth()}-${current.getUTCDate()}`;
+            
+            if (!activeDays.has(dateStr)) {
+                current.setUTCDate(current.getUTCDate() - 1);
+                dateStr = `${current.getUTCFullYear()}-${current.getUTCMonth()}-${current.getUTCDate()}`;
+            }
+
+            while (activeDays.has(dateStr)) {
+                streak++;
+                current.setUTCDate(current.getUTCDate() - 1);
+                dateStr = `${current.getUTCFullYear()}-${current.getUTCMonth()}-${current.getUTCDate()}`;
+            }
+        }
+
         const result = {
             username: profile.username,
             realName: profile.profile?.realName || '',
@@ -94,7 +121,7 @@ export async function getUserData(req, res) {
             })),
             topics: topicStats,
             submissionCalendar,
-            streak: 0,
+            streak,
         };
 
         cache.set(username, result);

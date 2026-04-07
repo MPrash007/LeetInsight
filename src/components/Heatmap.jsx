@@ -3,9 +3,8 @@ import { Flame, CalendarDays } from 'lucide-react';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
-const CELL_SIZE = 12;
-const GAP = 2;
-const LABEL_WIDTH = 28;
+const CELL_SIZE = 13;
+const GAP = 3;
 
 function getColor(count) {
     if (count === 0) return '#1E2338';
@@ -75,7 +74,7 @@ export default function Heatmap({ data }) {
         return labels;
     }, [weeks]);
 
-    const gridWidth = weeks.length * (CELL_SIZE + GAP);
+        const gridWidth = weeks.length * (CELL_SIZE + GAP);
 
     return (
         <div className="glass-card p-6">
@@ -102,21 +101,10 @@ export default function Heatmap({ data }) {
             )}
 
             {hasData && (
-                <div className="overflow-x-auto pb-2">
-                    <div style={{ paddingLeft: LABEL_WIDTH, width: gridWidth + LABEL_WIDTH }}>
-                        <div style={{ position: 'relative', height: 20, marginBottom: 4 }}>
-                            {monthLabels.map(({ month, weekIndex }, i) => (
-                                <span key={i} className="text-xs text-lc-text-secondary" style={{ position: 'absolute', left: weekIndex * (CELL_SIZE + GAP) }}>
-                                    {MONTHS[month]}
-                                </span>
-                            ))}
-                        </div>
+                <div className="overflow-x-auto pb-2 flex justify-center">
+                    <div style={{ width: gridWidth }}>
+                        
                         <div style={{ display: 'flex' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginRight: GAP, marginLeft: -LABEL_WIDTH, width: LABEL_WIDTH - GAP }}>
-                                {DAYS.map((d, i) => (
-                                    <span key={i} className="text-xs text-lc-text-secondary" style={{ height: CELL_SIZE, lineHeight: `${CELL_SIZE}px`, textAlign: 'right', paddingRight: 4 }}>{d}</span>
-                                ))}
-                            </div>
                             {weeks.map((week, wi) => (
                                 <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginRight: GAP }}>
                                     {week.map((day, di) => (
@@ -126,6 +114,15 @@ export default function Heatmap({ data }) {
                                 </div>
                             ))}
                         </div>
+
+                        <div style={{ position: 'relative', height: 20, marginTop: 8 }}>
+                            {monthLabels.map(({ month, weekIndex }, i) => (
+                                <span key={i} className="text-xs text-lc-text-secondary" style={{ position: 'absolute', left: weekIndex * (CELL_SIZE + GAP) }}>
+                                    {MONTHS[month]}
+                                </span>
+                            ))}
+                        </div>
+
                         <div className="flex items-center justify-end gap-1 mt-3">
                             <span className="text-xs text-lc-text-secondary mr-1">Less</span>
                             {['#1E2338', 'rgba(124,92,252,0.3)', 'rgba(124,92,252,0.55)', 'rgba(124,92,252,0.8)', '#7C5CFC'].map((c, i) => (
