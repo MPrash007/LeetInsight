@@ -4,7 +4,7 @@ import {
     fetchContestHistory,
     fetchSubmissionCalendar,
     fetchUserTagStats,
-} from '../_lib/leetcodeService.js';
+} from './_lib/leetcodeService.js';
 
 // Simple in-memory cache (resets on cold start)
 const cache = new Map();
