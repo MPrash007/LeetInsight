@@ -32,17 +32,16 @@ export default async function handler(req, res) {
     }
 
     try {
-        const [profile, problems, contest, calendar, tags] = await Promise.all([
-            fetchUserProfile(username),
-            fetchUserProblems(username),
-            fetchContestHistory(username),
-            fetchSubmissionCalendar(username),
-            fetchUserTagStats(username),
-        ]);
-
+        // Run requests sequentially to avoid triggering LeetCode's strict rate limits / Cloudflare blocks on Vercel Datacenter IPs
+        const profile = await fetchUserProfile(username);
         if (!profile) {
             return res.status(404).json({ error: `User "${username}" not found` });
         }
+
+        const problems = await fetchUserProblems(username);
+        const contest = await fetchContestHistory(username);
+        const calendar = await fetchSubmissionCalendar(username);
+        const tags = await fetchUserTagStats(username);
 
         const totalSubmissions = profile.submitStatsGlobal?.acSubmissionNum || [];
         const totalSolved = totalSubmissions.find(s => s.difficulty === 'All')?.count || 0;
@@ -112,6 +111,6 @@ export default async function handler(req, res) {
         if (err.message.includes('not found') || err.message.includes('does not exist')) {
             return res.status(404).json({ error: `User "${username}" not found` });
         }
-        res.status(500).json({ error: 'Failed to fetch LeetCode data. Please try again later.' });
+        res.status(500).json({ error: `LeetCode API Error: ${err.message}` });
     }
 }
