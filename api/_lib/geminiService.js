@@ -7,7 +7,7 @@ export async function generateDeepInsights(userData) {
     }
     
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Prepare data summary to send to the model to reduce token usage
     const summary = {
@@ -40,6 +40,21 @@ Format your response using Markdown:
 Keep the tone motivating and professional. Speak directly to the user (e.g. "You have built a solid foundation..."). Use bolding for emphasis where appropriate.
 `;
 
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+    const MAX_RETRIES = 3;
+    let attempt = 0;
+
+    while (attempt < MAX_RETRIES) {
+        try {
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        } catch (error) {
+            if (error.message && error.message.includes('503') && attempt < MAX_RETRIES - 1) {
+                attempt++;
+                // Wait 1.5s, 3s, 4.5s
+                await new Promise(resolve => setTimeout(resolve, attempt * 1500));
+                continue;
+            }
+            throw error;
+        }
+    }
 }

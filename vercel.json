@@ -3,6 +3,10 @@
         {
             "source": "/api/user/:username",
             "destination": "/api/user?username=:username"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
