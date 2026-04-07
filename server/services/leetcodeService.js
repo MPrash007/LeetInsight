@@ -120,19 +120,25 @@ export async function fetchSubmissionCalendar(username) {
     const query = `
     query getUserSubmissionCalendar($username: String!) {
       matchedUser(username: $username) {
-        submissionCalendar
+        userCalendar {
+          streak
+          submissionCalendar
+        }
       }
     }
   `;
 
     const data = await graphqlRequest(query, { username });
-    const calendarStr = data?.matchedUser?.submissionCalendar;
-    if (!calendarStr) return {};
+    const userCalendar = data?.matchedUser?.userCalendar;
+    if (!userCalendar) return { streak: 0, calendarData: {} };
 
     try {
-        return JSON.parse(calendarStr);
+        return {
+            streak: userCalendar.streak || 0,
+            calendarData: JSON.parse(userCalendar.submissionCalendar || '{}')
+        };
     } catch {
-        return {};
+        return { streak: 0, calendarData: {} };
     }
 }
 

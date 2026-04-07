@@ -74,7 +74,17 @@ export default function Heatmap({ data }) {
         return labels;
     }, [weeks]);
 
-        const gridWidth = weeks.length * (CELL_SIZE + GAP);
+    const { offsets, totalWidth } = useMemo(() => {
+        let currentOffset = 0;
+        const o = [];
+        weeks.forEach((week, wi) => {
+            const isNewMonth = wi > 0 && monthLabels.some(l => l.weekIndex === wi);
+            if (isNewMonth) currentOffset += 6;
+            o.push(currentOffset);
+            currentOffset += CELL_SIZE + GAP;
+        });
+        return { offsets: o, totalWidth: currentOffset };
+    }, [weeks, monthLabels]);
 
     return (
         <div className="glass-card p-6">
@@ -102,22 +112,25 @@ export default function Heatmap({ data }) {
 
             {hasData && (
                 <div className="overflow-x-auto pb-2 flex justify-center">
-                    <div style={{ width: gridWidth }}>
+                    <div style={{ width: totalWidth }}>
                         
                         <div style={{ display: 'flex' }}>
-                            {weeks.map((week, wi) => (
-                                <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginRight: GAP }}>
+                            {weeks.map((week, wi) => {
+                                const isNewMonth = wi > 0 && monthLabels.some(l => l.weekIndex === wi);
+                                return (
+                                <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginRight: GAP, marginLeft: isNewMonth ? 6 : 0 }}>
                                     {week.map((day, di) => (
                                         <div key={di} style={{ width: CELL_SIZE, height: CELL_SIZE, borderRadius: 2, backgroundColor: day.date ? getColor(day.count) : 'transparent', transition: 'background-color 0.2s', cursor: day.date ? 'pointer' : 'default' }}
                                             title={day.date ? `${day.date.toLocaleDateString()}: ${day.count} submission${day.count !== 1 ? 's' : ''}` : ''} />
                                     ))}
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         <div style={{ position: 'relative', height: 20, marginTop: 8 }}>
                             {monthLabels.map(({ month, weekIndex }, i) => (
-                                <span key={i} className="text-xs text-lc-text-secondary" style={{ position: 'absolute', left: weekIndex * (CELL_SIZE + GAP) }}>
+                                <span key={i} className="text-xs text-lc-text-secondary" style={{ position: 'absolute', left: offsets[weekIndex] }}>
                                     {MONTHS[month]}
                                 </span>
                             ))}
