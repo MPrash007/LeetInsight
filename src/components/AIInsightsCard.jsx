@@ -1,143 +1,86 @@
-import { Brain, TrendingUp, TrendingDown, Target, Lightbulb } from 'lucide-react';
-
-function generateInsights(data) {
-    const insights = [];
-    const topics = data.topics || [];
-    const strengths = topics.slice(0, 3).map(t => t.name);
-    const weakTopics = [
-        'Dynamic Programming', 'Graph', 'Tree', 'Backtracking', 'Binary Search',
-        'Stack', 'Queue', 'Greedy', 'Trie', 'Segment Tree',
-    ];
-    const solvedTopicNames = new Set(topics.map(t => t.name));
-    const weak = weakTopics.filter(t => !solvedTopicNames.has(t)).slice(0, 3);
-    const lowSolved = topics.filter(t => t.count < 5).slice(0, 3).map(t => t.name);
-    const actualWeak = weak.length > 0 ? weak : lowSolved;
-
-    if (strengths.length > 0) {
-        insights.push({
-            type: 'strength',
-            icon: TrendingUp,
-            color: 'text-lc-easy',
-            bg: 'bg-lc-easy/10',
-            border: 'border-lc-easy/20',
-            text: `You are strong in ${strengths.join(', ')} problems. Keep up the great work!`,
-        });
-    }
-
-    if (actualWeak.length > 0) {
-        insights.push({
-            type: 'weakness',
-            icon: TrendingDown,
-            color: 'text-lc-hard',
-            bg: 'bg-lc-hard/10',
-            border: 'border-lc-hard/20',
-            text: `You should improve in ${actualWeak.join(', ')}. Focus on solving more problems in these areas.`,
-        });
-    }
-
-    const total = data.totalSolved || 1;
-    const mediumPct = (data.mediumSolved / total) * 100;
-    const hardPct = (data.hardSolved / total) * 100;
-
-    if (mediumPct < 30) {
-        insights.push({
-            type: 'tip',
-            icon: Target,
-            color: 'text-lc-medium',
-            bg: 'bg-lc-medium/10',
-            border: 'border-lc-medium/20',
-            text: `Only ${mediumPct.toFixed(0)}% of your solutions are Medium problems. Focus on Medium to reach the next rating tier.`,
-        });
-    } else if (hardPct < 10) {
-        insights.push({
-            type: 'tip',
-            icon: Target,
-            color: 'text-lc-medium',
-            bg: 'bg-lc-medium/10',
-            border: 'border-lc-medium/20',
-            text: `Try solving more Hard problems (currently ${hardPct.toFixed(0)}%). This will sharpen your competitive programming skills.`,
-        });
-    }
-
-    if (data.contestHistory && data.contestHistory.length > 3) {
-        const recent = data.contestHistory.slice(-5);
-        const avgRecent = recent.reduce((sum, c) => sum + c.rating, 0) / recent.length;
-        const older = data.contestHistory.slice(-10, -5);
-        if (older.length > 0) {
-            const avgOlder = older.reduce((sum, c) => sum + c.rating, 0) / older.length;
-            if (avgRecent > avgOlder) {
-                insights.push({
-                    type: 'positive',
-                    icon: TrendingUp,
-                    color: 'text-lc-cyan',
-                    bg: 'bg-[#00D4FF]/10',
-                    border: 'border-[#00D4FF]/20',
-                    text: `Your contest rating shows consistent improvement! Recent average: ${Math.round(avgRecent)} vs earlier: ${Math.round(avgOlder)}.`,
-                });
-            } else {
-                insights.push({
-                    type: 'warning',
-                    icon: Lightbulb,
-                    color: 'text-lc-accent',
-                    bg: 'bg-lc-accent/10',
-                    border: 'border-lc-accent/20',
-                    text: `Your recent contest performance has dipped. Consider practicing timed problems to regain momentum.`,
-                });
-            }
-        }
-    } else if (data.contestAttended === 0) {
-        insights.push({
-            type: 'tip',
-            icon: Lightbulb,
-            color: 'text-lc-accent',
-            bg: 'bg-lc-accent/10',
-            border: 'border-lc-accent/20',
-            text: `You haven't participated in any contests yet. Join weekly contests to boost your competitive skills!`,
-        });
-    }
-
-    const nextTopics = actualWeak.length > 0 ? actualWeak : ['Two Pointers', 'Sliding Window', 'Union Find'];
-    insights.push({
-        type: 'recommendation',
-        icon: Lightbulb,
-        color: 'text-lc-pink',
-        bg: 'bg-[#E91E8C]/10',
-        border: 'border-[#E91E8C]/20',
-        text: `Recommended next topics: ${nextTopics.join(', ')}. Practice 2-3 problems daily in these areas.`,
-    });
-
-    return insights;
-}
+import { useState } from 'react';
+import { Brain, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { generateInsights } from '../services/api';
 
 export default function AIInsightsCard({ data }) {
-    const insights = generateInsights(data);
+    const [insight, setInsight] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleGenerate = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await generateInsights(data);
+            setInsight(result.insight);
+        } catch (err) {
+            console.error(err);
+            setError(err.response?.data?.error || 'Failed to generate AI insights.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <div className="glass-card p-6">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lc-accent to-lc-pink flex items-center justify-center">
+        <div className="glass-card p-6 flex flex-col items-start min-h-[250px]">
+            <div className="flex items-center gap-3 mb-6 w-full">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lc-accent to-lc-pink flex flex-shrink-0 items-center justify-center">
                     <Brain className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                    <h3 className="text-lg font-semibold text-lc-text">AI Performance Analysis</h3>
-                    <p className="text-xs text-lc-text-secondary">Insights generated from your coding data</p>
+                <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-lc-text">Gemini AI Analysis</h3>
+                    <p className="text-xs text-lc-text-secondary">Get deep, personalized progression advice</p>
                 </div>
+                {!insight && !loading && (
+                    <button
+                        onClick={handleGenerate}
+                        className="bg-lc-accent/10 hover:bg-lc-accent/20 border border-lc-accent/30 text-lc-accent flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-semibold whitespace-nowrap"
+                    >
+                        <Sparkles className="w-4 h-4" />
+                        Generate Analysis
+                    </button>
+                )}
             </div>
 
-            <div className="space-y-3">
-                {insights.map((insight, i) => {
-                    const Icon = insight.icon;
-                    return (
-                        <div
-                            key={i}
-                            className={`flex items-start gap-3 p-4 rounded-xl ${insight.bg} border ${insight.border} transition-all duration-200 hover:scale-[1.01]`}
-                        >
-                            <Icon className={`w-5 h-5 ${insight.color} mt-0.5 flex-shrink-0`} />
-                            <p className="text-sm text-lc-text leading-relaxed">{insight.text}</p>
-                        </div>
-                    );
-                })}
-            </div>
+            {loading && (
+                <div className="flex-1 w-full flex flex-col items-center justify-center py-8">
+                    <Loader2 className="w-8 h-8 text-lc-pink animate-spin mb-3" />
+                    <p className="text-lc-text-secondary text-sm animate-pulse text-center">
+                        Synthesizing coding patterns...<br/>
+                        Analyzing weaknesses...
+                    </p>
+                </div>
+            )}
+
+            {error && !loading && (
+                <div className="flex-1 w-full flex flex-col items-center justify-center py-6 bg-lc-hard/5 border border-lc-hard/20 rounded-xl">
+                    <AlertCircle className="w-6 h-6 text-lc-hard mb-2" />
+                    <p className="text-sm text-lc-text-secondary text-center px-4">{error}</p>
+                    <button onClick={handleGenerate} className="mt-4 text-lc-hard text-xs font-semibold hover:underline">
+                        Try Again
+                    </button>
+                </div>
+            )}
+
+            {insight && !loading && (
+                <div className="w-full prose prose-invert prose-sm max-w-none 
+                    prose-p:text-lc-text-secondary prose-p:leading-relaxed 
+                    prose-strong:text-lc-text prose-strong:font-semibold 
+                    prose-ul:text-lc-text-secondary prose-li:my-1
+                    prose-headings:text-lc-text prose-headings:font-semibold">
+                    <ReactMarkdown>{insight}</ReactMarkdown>
+                </div>
+            )}
+
+            {!insight && !loading && !error && (
+                <div className="flex-1 w-full flex flex-col items-center justify-center py-8">
+                    <p className="text-lc-text-secondary text-sm text-center max-w-sm">
+                        Click the button above to generate a unique AI analysis of your LeetCode profile using Gemini. 
+                        It will highlight your strengths and recommend exact topics to practice next!
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

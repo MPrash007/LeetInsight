@@ -10,4 +10,9 @@ export async function fetchUser(username) {
     return data;
 }
 
+export async function generateInsights(userData) {
+    const { data } = await API.post('/insights', userData);
+    return data;
+}
+
 export default API;
