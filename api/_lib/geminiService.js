@@ -7,7 +7,7 @@ export async function generateDeepInsights(userData) {
     }
     
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Prepare data summary to send to the model to reduce token usage
     const summary = {
