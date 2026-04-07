@@ -32,9 +32,21 @@ export default function Dashboard() {
             })
             .catch((err) => {
                 if (!cancelled) {
-                    const msg =
-                        err.response?.data?.error ||
-                        'Failed to fetch data. Please check the username and try again.';
+                    let msg = 'Failed to fetch data. Please check the username and try again.';
+                    const apiError = err.response?.data?.error;
+
+                    // Handle Vercel timeout/platform errors which return objects
+                    if (typeof apiError === 'string') {
+                        msg = apiError;
+                    } else if (apiError && typeof apiError.message === 'string') {
+                        msg = apiError.message;
+                        if (apiError.code === '504' || msg.includes('TIMEOUT')) {
+                            msg = 'Request timed out. LeetCode API might be slow. Please try again.';
+                        }
+                    } else if (err.message) {
+                        msg = err.message;
+                    }
+
                     setError(msg);
                 }
             })
