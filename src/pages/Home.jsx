@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, BarChart3, Trophy, TrendingUp, Code2, Zap } from 'lucide-react';
+import { Search, BarChart3, Trophy, TrendingUp, Zap } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -50,7 +50,7 @@ export default function Home() {
                     className="w-full max-w-xl animate-slide-up"
                 >
                     <div className="relative group">
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-lc-accent to-yellow-400 rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-300 blur-sm" />
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-lc-accent via-lc-pink to-lc-cyan rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-300 blur-sm" />
                         <div className="relative flex items-center bg-lc-card border border-lc-border rounded-2xl overflow-hidden">
                             <Search className="w-5 h-5 text-lc-text-secondary ml-5" />
                             <input
@@ -63,7 +63,7 @@ export default function Home() {
                             />
                             <button
                                 type="submit"
-                                className="bg-lc-accent hover:bg-lc-accent-hover text-lc-bg font-semibold px-6 py-3 mr-1.5 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-lc-accent/20"
+                                className="bg-gradient-to-r from-lc-accent to-lc-pink hover:opacity-90 text-white font-semibold px-6 py-3 mr-1.5 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-lc-accent/20"
                                 id="search-button"
                             >
                                 Analyze
@@ -93,24 +93,31 @@ export default function Home() {
                             icon: BarChart3,
                             title: 'Visual Analytics',
                             desc: 'Interactive charts showing your problem-solving distribution, topic strengths, and progress.',
+                            color: 'from-lc-accent to-purple-400',
+                            iconColor: 'text-lc-accent',
                         },
                         {
                             icon: Trophy,
                             title: 'Contest Insights',
                             desc: 'Track your contest rating history, ranking, and compare performance over time.',
+                            color: 'from-lc-cyan to-blue-400',
+                            iconColor: 'text-lc-cyan',
                         },
                         {
                             icon: TrendingUp,
                             title: 'AI Recommendations',
                             desc: 'Get personalized suggestions on which topics to focus on to improve your skills.',
+                            color: 'from-lc-pink to-rose-400',
+                            iconColor: 'text-lc-pink',
                         },
-                    ].map(({ icon: Icon, title, desc }) => (
+                    ].map(({ icon: Icon, title, desc, color, iconColor }) => (
                         <div
                             key={title}
                             className="glass-card-hover p-6 flex flex-col items-center text-center"
                         >
-                            <div className="w-12 h-12 rounded-xl bg-lc-accent/10 flex items-center justify-center mb-4">
-                                <Icon className="w-6 h-6 text-lc-accent" />
+                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${color} bg-opacity-10 flex items-center justify-center mb-4`}
+                                style={{ background: `linear-gradient(135deg, rgba(124,92,252,0.15), rgba(0,212,255,0.1))` }}>
+                                <Icon className={`w-6 h-6 ${iconColor}`} />
                             </div>
                             <h3 className="text-lc-text font-semibold text-lg mb-2">{title}</h3>
                             <p className="text-lc-text-secondary text-sm leading-relaxed">{desc}</p>

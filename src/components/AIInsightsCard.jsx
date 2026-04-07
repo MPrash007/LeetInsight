@@ -13,7 +13,6 @@ function generateInsights(data) {
     const lowSolved = topics.filter(t => t.count < 5).slice(0, 3).map(t => t.name);
     const actualWeak = weak.length > 0 ? weak : lowSolved;
 
-    // Strength insights
     if (strengths.length > 0) {
         insights.push({
             type: 'strength',
@@ -25,7 +24,6 @@ function generateInsights(data) {
         });
     }
 
-    // Weakness insights
     if (actualWeak.length > 0) {
         insights.push({
             type: 'weakness',
@@ -37,9 +35,7 @@ function generateInsights(data) {
         });
     }
 
-    // Difficulty balance
     const total = data.totalSolved || 1;
-    const easyPct = (data.easySolved / total) * 100;
     const mediumPct = (data.mediumSolved / total) * 100;
     const hardPct = (data.hardSolved / total) * 100;
 
@@ -63,7 +59,6 @@ function generateInsights(data) {
         });
     }
 
-    // Contest insights
     if (data.contestHistory && data.contestHistory.length > 3) {
         const recent = data.contestHistory.slice(-5);
         const avgRecent = recent.reduce((sum, c) => sum + c.rating, 0) / recent.length;
@@ -74,9 +69,9 @@ function generateInsights(data) {
                 insights.push({
                     type: 'positive',
                     icon: TrendingUp,
-                    color: 'text-lc-easy',
-                    bg: 'bg-lc-easy/10',
-                    border: 'border-lc-easy/20',
+                    color: 'text-lc-cyan',
+                    bg: 'bg-[#00D4FF]/10',
+                    border: 'border-[#00D4FF]/20',
                     text: `Your contest rating shows consistent improvement! Recent average: ${Math.round(avgRecent)} vs earlier: ${Math.round(avgOlder)}.`,
                 });
             } else {
@@ -101,14 +96,13 @@ function generateInsights(data) {
         });
     }
 
-    // Recommended next topics
     const nextTopics = actualWeak.length > 0 ? actualWeak : ['Two Pointers', 'Sliding Window', 'Union Find'];
     insights.push({
         type: 'recommendation',
         icon: Lightbulb,
-        color: 'text-lc-accent',
-        bg: 'bg-lc-accent/10',
-        border: 'border-lc-accent/20',
+        color: 'text-lc-pink',
+        bg: 'bg-[#E91E8C]/10',
+        border: 'border-[#E91E8C]/20',
         text: `Recommended next topics: ${nextTopics.join(', ')}. Practice 2-3 problems daily in these areas.`,
     });
 
@@ -121,8 +115,8 @@ export default function AIInsightsCard({ data }) {
     return (
         <div className="glass-card p-6">
             <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lc-accent to-yellow-300 flex items-center justify-center">
-                    <Brain className="w-5 h-5 text-lc-bg" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lc-accent to-lc-pink flex items-center justify-center">
+                    <Brain className="w-5 h-5 text-white" />
                 </div>
                 <div>
                     <h3 className="text-lg font-semibold text-lc-text">AI Performance Analysis</h3>

@@ -8,18 +8,17 @@ const GAP = 2;
 const LABEL_WIDTH = 28;
 
 function getColor(count) {
-    if (count === 0) return '#2a2a2a';
-    if (count <= 2) return 'rgba(255,161,22,0.25)';
-    if (count <= 5) return 'rgba(255,161,22,0.5)';
-    if (count <= 10) return 'rgba(255,161,22,0.75)';
-    return '#FFA116';
+    if (count === 0) return '#1E2338';
+    if (count <= 2) return 'rgba(124,92,252,0.3)';
+    if (count <= 5) return 'rgba(124,92,252,0.55)';
+    if (count <= 10) return 'rgba(124,92,252,0.8)';
+    return '#7C5CFC';
 }
 
 export default function Heatmap({ data }) {
     const calendarData = data.submissionCalendar || {};
 
     const { weeks, totalSubmissions, hasData } = useMemo(() => {
-        // Build lookup map from calendar data
         const calMap = {};
         for (const [ts, count] of Object.entries(calendarData)) {
             calMap[Number(ts)] = count;
@@ -29,7 +28,6 @@ export default function Heatmap({ data }) {
         const oneYearAgo = new Date(now);
         oneYearAgo.setFullYear(now.getFullYear() - 1);
 
-        // Start from the beginning of the week (Sunday)
         const startDate = new Date(oneYearAgo);
         startDate.setDate(startDate.getDate() - startDate.getDay());
 
@@ -46,18 +44,11 @@ export default function Heatmap({ data }) {
                     const y = currentDate.getFullYear();
                     const m = currentDate.getMonth();
                     const day = currentDate.getDate();
-
-                    // Try multiple timestamp formats to match LeetCode's calendar
                     const midnightUTC = Date.UTC(y, m, day) / 1000;
                     const midnightLocal = new Date(y, m, day).getTime() / 1000;
                     const count = calMap[midnightUTC] || calMap[midnightLocal] || 0;
                     total += count;
-
-                    week.push({
-                        date: new Date(currentDate),
-                        count,
-                        month: m,
-                    });
+                    week.push({ date: new Date(currentDate), count, month: m });
                 }
                 currentDate.setDate(currentDate.getDate() + 1);
             }
@@ -71,12 +62,10 @@ export default function Heatmap({ data }) {
         };
     }, [calendarData]);
 
-    // Compute month label positions based on first occurrence in each week's first visible day
     const monthLabels = useMemo(() => {
         const labels = [];
         let lastMonth = -1;
         weeks.forEach((week, wi) => {
-            // Use the first non-null day of the week to determine the month
             const firstDay = week.find(d => d.date !== null);
             if (firstDay && firstDay.month !== lastMonth) {
                 labels.push({ month: firstDay.month, weekIndex: wi });
@@ -98,8 +87,8 @@ export default function Heatmap({ data }) {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Flame className="w-4 h-4 text-lc-accent" />
-                    <span className="text-lc-accent font-bold">{data.streak || 0}</span>
+                    <Flame className="w-4 h-4 text-lc-pink" />
+                    <span className="text-lc-pink font-bold">{data.streak || 0}</span>
                     <span className="text-lc-text-secondary text-sm">day streak</span>
                 </div>
             </div>
@@ -107,113 +96,40 @@ export default function Heatmap({ data }) {
             {!hasData && (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
                     <CalendarDays className="w-10 h-10 text-lc-text-secondary/30 mb-3" />
-                    <p className="text-lc-text-secondary text-sm">
-                        No recent submission activity available for this user.
-                    </p>
-                    <p className="text-lc-text-secondary/50 text-xs mt-1">
-                        Submission data may not be public or the user hasn't submitted recently.
-                    </p>
+                    <p className="text-lc-text-secondary text-sm">No recent submission activity available for this user.</p>
+                    <p className="text-lc-text-secondary/50 text-xs mt-1">Submission data may not be public or the user hasn't submitted recently.</p>
                 </div>
             )}
 
             {hasData && (
                 <div className="overflow-x-auto pb-2">
                     <div style={{ paddingLeft: LABEL_WIDTH, width: gridWidth + LABEL_WIDTH }}>
-                        {/* Month labels — absolutely positioned above the grid */}
                         <div style={{ position: 'relative', height: 20, marginBottom: 4 }}>
                             {monthLabels.map(({ month, weekIndex }, i) => (
-                                <span
-                                    key={i}
-                                    className="text-xs text-lc-text-secondary"
-                                    style={{
-                                        position: 'absolute',
-                                        left: weekIndex * (CELL_SIZE + GAP),
-                                    }}
-                                >
+                                <span key={i} className="text-xs text-lc-text-secondary" style={{ position: 'absolute', left: weekIndex * (CELL_SIZE + GAP) }}>
                                     {MONTHS[month]}
                                 </span>
                             ))}
                         </div>
-
-                        {/* Grid with day labels */}
                         <div style={{ display: 'flex' }}>
-                            {/* Day labels column */}
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: GAP,
-                                marginRight: GAP,
-                                marginLeft: -LABEL_WIDTH,
-                                width: LABEL_WIDTH - GAP,
-                            }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginRight: GAP, marginLeft: -LABEL_WIDTH, width: LABEL_WIDTH - GAP }}>
                                 {DAYS.map((d, i) => (
-                                    <span
-                                        key={i}
-                                        className="text-xs text-lc-text-secondary"
-                                        style={{
-                                            height: CELL_SIZE,
-                                            lineHeight: `${CELL_SIZE}px`,
-                                            textAlign: 'right',
-                                            paddingRight: 4,
-                                        }}
-                                    >
-                                        {d}
-                                    </span>
+                                    <span key={i} className="text-xs text-lc-text-secondary" style={{ height: CELL_SIZE, lineHeight: `${CELL_SIZE}px`, textAlign: 'right', paddingRight: 4 }}>{d}</span>
                                 ))}
                             </div>
-
-                            {/* Week columns */}
                             {weeks.map((week, wi) => (
-                                <div
-                                    key={wi}
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: GAP,
-                                        marginRight: GAP,
-                                    }}
-                                >
+                                <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginRight: GAP }}>
                                     {week.map((day, di) => (
-                                        <div
-                                            key={di}
-                                            style={{
-                                                width: CELL_SIZE,
-                                                height: CELL_SIZE,
-                                                borderRadius: 2,
-                                                backgroundColor: day.date ? getColor(day.count) : 'transparent',
-                                                transition: 'background-color 0.2s',
-                                                cursor: day.date ? 'pointer' : 'default',
-                                            }}
-                                            title={
-                                                day.date
-                                                    ? `${day.date.toLocaleDateString()}: ${day.count} submission${day.count !== 1 ? 's' : ''}`
-                                                    : ''
-                                            }
-                                        />
+                                        <div key={di} style={{ width: CELL_SIZE, height: CELL_SIZE, borderRadius: 2, backgroundColor: day.date ? getColor(day.count) : 'transparent', transition: 'background-color 0.2s', cursor: day.date ? 'pointer' : 'default' }}
+                                            title={day.date ? `${day.date.toLocaleDateString()}: ${day.count} submission${day.count !== 1 ? 's' : ''}` : ''} />
                                     ))}
                                 </div>
                             ))}
                         </div>
-
-                        {/* Legend */}
                         <div className="flex items-center justify-end gap-1 mt-3">
                             <span className="text-xs text-lc-text-secondary mr-1">Less</span>
-                            {[
-                                '#2a2a2a',
-                                'rgba(255,161,22,0.25)',
-                                'rgba(255,161,22,0.5)',
-                                'rgba(255,161,22,0.75)',
-                                '#FFA116',
-                            ].map((c, i) => (
-                                <div
-                                    key={i}
-                                    style={{
-                                        width: CELL_SIZE,
-                                        height: CELL_SIZE,
-                                        borderRadius: 2,
-                                        backgroundColor: c,
-                                    }}
-                                />
+                            {['#1E2338', 'rgba(124,92,252,0.3)', 'rgba(124,92,252,0.55)', 'rgba(124,92,252,0.8)', '#7C5CFC'].map((c, i) => (
+                                <div key={i} style={{ width: CELL_SIZE, height: CELL_SIZE, borderRadius: 2, backgroundColor: c }} />
                             ))}
                             <span className="text-xs text-lc-text-secondary ml-1">More</span>
                         </div>

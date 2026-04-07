@@ -2,10 +2,10 @@ import { User, Globe, Trophy, Star, Award } from 'lucide-react';
 
 export default function ProfileCard({ data }) {
     const stats = [
-        { icon: Globe, label: 'Global Ranking', value: data.ranking ? `#${data.ranking.toLocaleString()}` : 'N/A' },
-        { icon: Trophy, label: 'Contest Rating', value: data.contestRating || 'N/A' },
-        { icon: Star, label: 'Reputation', value: data.reputation || 0 },
-        { icon: Award, label: 'Contributions', value: data.contributionPoints || 0 },
+        { icon: Globe, label: 'Global Ranking', value: data.ranking ? `#${data.ranking.toLocaleString()}` : 'N/A', color: 'text-lc-cyan' },
+        { icon: Trophy, label: 'Contest Rating', value: data.contestRating || 'N/A', color: 'text-lc-accent' },
+        { icon: Star, label: 'Reputation', value: data.reputation || 0, color: 'text-lc-pink' },
+        { icon: Award, label: 'Contributions', value: data.contributionPoints || 0, color: 'text-lc-orange' },
     ];
 
     return (
@@ -13,7 +13,7 @@ export default function ProfileCard({ data }) {
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 {/* Avatar */}
                 <div className="relative">
-                    <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-lc-accent/30 bg-lc-card">
+                    <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-lc-accent/30 bg-lc-card-hover">
                         {data.avatar ? (
                             <img
                                 src={data.avatar}
@@ -27,7 +27,7 @@ export default function ProfileCard({ data }) {
                         )}
                     </div>
                     {data.streak > 0 && (
-                        <div className="absolute -bottom-2 -right-2 bg-lc-accent text-lc-bg text-xs font-bold px-2 py-0.5 rounded-full">
+                        <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-lc-accent to-lc-pink text-white text-xs font-bold px-2 py-0.5 rounded-full">
                             🔥 {data.streak}
                         </div>
                     )}
@@ -59,12 +59,12 @@ export default function ProfileCard({ data }) {
 
             {/* Stats Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-                {stats.map(({ icon: Icon, label, value }) => (
+                {stats.map(({ icon: Icon, label, value, color }) => (
                     <div
                         key={label}
-                        className="bg-lc-bg/50 rounded-xl p-4 text-center border border-lc-border/30 hover:border-lc-accent/20 transition-colors"
+                        className="bg-lc-bg/50 rounded-xl p-4 text-center border border-lc-border hover:border-lc-accent/20 transition-colors"
                     >
-                        <Icon className="w-5 h-5 text-lc-accent mx-auto mb-2" />
+                        <Icon className={`w-5 h-5 ${color} mx-auto mb-2`} />
                         <p className="text-xl font-bold text-lc-text">{value}</p>
                         <p className="text-xs text-lc-text-secondary mt-1">{label}</p>
                     </div>

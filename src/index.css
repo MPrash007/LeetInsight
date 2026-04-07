@@ -12,22 +12,25 @@
   ::-webkit-scrollbar {
     width: 6px;
   }
+
   ::-webkit-scrollbar-track {
-    background: #0F0F0F;
+    background: #0B0F19;
   }
+
   ::-webkit-scrollbar-thumb {
-    background: #333;
+    background: #2A2F45;
     border-radius: 3px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #3D4460;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-lc-card/80 backdrop-blur-xl border border-lc-border/50 rounded-2xl;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    @apply bg-lc-card border border-lc-border rounded-2xl;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(124, 92, 252, 0.03);
   }
 
   .glass-card-hover {
@@ -35,17 +38,17 @@
   }
 
   .glass-card-hover:hover {
-    @apply border-lc-accent/30 bg-lc-card;
-    box-shadow: 0 8px 32px rgba(255, 161, 22, 0.08);
+    @apply border-lc-accent/30 bg-lc-card-hover;
+    box-shadow: 0 8px 32px rgba(124, 92, 252, 0.1);
     transform: translateY(-2px);
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-lc-accent to-yellow-300 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-lc-accent via-lc-pink to-lc-cyan bg-clip-text text-transparent;
   }
 
   .progress-bar {
-    @apply h-2 rounded-full overflow-hidden bg-lc-border/50;
+    @apply h-2 rounded-full overflow-hidden bg-lc-border;
   }
 
   .progress-bar-fill {
@@ -53,7 +56,7 @@
   }
 
   .skeleton {
-    @apply bg-lc-card rounded-lg animate-pulse;
+    @apply bg-lc-card-hover rounded-lg animate-pulse;
   }
 }
 

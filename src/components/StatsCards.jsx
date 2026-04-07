@@ -8,7 +8,7 @@ function ProgressBar({ value, max, color }) {
                 className="progress-bar-fill"
                 style={{
                     width: `${percentage}%`,
-                    backgroundColor: color,
+                    background: color,
                 }}
             />
         </div>
@@ -21,7 +21,8 @@ export default function StatsCards({ data }) {
             label: 'Easy',
             solved: data.easySolved,
             total: data.totalEasy,
-            color: '#00B8A3',
+            color: 'linear-gradient(90deg, #10B981, #34D399)',
+            textColor: '#10B981',
             bg: 'bg-lc-easy/10',
             border: 'border-lc-easy/20',
         },
@@ -29,7 +30,8 @@ export default function StatsCards({ data }) {
             label: 'Medium',
             solved: data.mediumSolved,
             total: data.totalMedium,
-            color: '#FFC01E',
+            color: 'linear-gradient(90deg, #F59E0B, #FBBF24)',
+            textColor: '#F59E0B',
             bg: 'bg-lc-medium/10',
             border: 'border-lc-medium/20',
         },
@@ -37,7 +39,8 @@ export default function StatsCards({ data }) {
             label: 'Hard',
             solved: data.hardSolved,
             total: data.totalHard,
-            color: '#FF375F',
+            color: 'linear-gradient(90deg, #EF4444, #F87171)',
+            textColor: '#EF4444',
             bg: 'bg-lc-hard/10',
             border: 'border-lc-hard/20',
         },
@@ -48,7 +51,7 @@ export default function StatsCards({ data }) {
             {/* Total Solved */}
             <div className="glass-card-hover p-5">
                 <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-xl bg-lc-accent/10 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lc-accent/20 to-lc-pink/10 flex items-center justify-center">
                         <CheckCircle2 className="w-5 h-5 text-lc-accent" />
                     </div>
                     <div>
@@ -60,15 +63,15 @@ export default function StatsCards({ data }) {
                     <span className="text-lc-text-secondary">of {data.totalAll} problems</span>
                     <span className="text-lc-accent font-medium">{data.acceptanceRate}% rate</span>
                 </div>
-                <ProgressBar value={data.totalSolved} max={data.totalAll} color="#FFA116" />
+                <ProgressBar value={data.totalSolved} max={data.totalAll} color="linear-gradient(90deg, #7C5CFC, #E91E8C)" />
             </div>
 
             {/* Difficulty Cards */}
-            {difficulties.map(({ label, solved, total, color, bg, border }) => (
+            {difficulties.map(({ label, solved, total, color, textColor, bg, border }) => (
                 <div key={label} className="glass-card-hover p-5">
                     <div className="flex items-center gap-3 mb-3">
                         <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center border ${border}`}>
-                            <span className="text-sm font-bold" style={{ color }}>{label[0]}</span>
+                            <span className="text-sm font-bold" style={{ color: textColor }}>{label[0]}</span>
                         </div>
                         <div>
                             <p className="text-xs text-lc-text-secondary">{label}</p>
@@ -77,7 +80,7 @@ export default function StatsCards({ data }) {
                     </div>
                     <div className="flex items-center justify-between text-xs">
                         <span className="text-lc-text-secondary">of {total}</span>
-                        <span style={{ color }} className="font-medium">
+                        <span style={{ color: textColor }} className="font-medium">
                             {total > 0 ? ((solved / total) * 100).toFixed(1) : 0}%
                         </span>
                     </div>
