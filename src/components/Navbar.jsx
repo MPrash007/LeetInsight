@@ -27,7 +27,7 @@ export default function Navbar() {
                         </Link>
                     )}
                     <a
-                        href="https://github.com"
+                        href="https://github.com/MPrash007/LeetInsight"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-lc-text-secondary hover:text-lc-text transition-colors"
