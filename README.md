@@ -1,8 +1,8 @@
-# 🚀 LeetInsight — LeetCode Analytics Dashboard
+# 🚀 LeetInsight — Competitive Programming Analytics Dashboard
 
 **Live Demo:** [https://leet-insight-r61a.vercel.app/](https://leet-insight-r61a.vercel.app/)
 
-A modern, full-stack web application that fetches any LeetCode user's data and visualizes their coding journey. It features a beautiful stunning UI, interactive charts, and AI-driven performance insights.
+A modern, full-stack web application that fetches any LeetCode or Codeforces user's data and visualizes their coding journey. It features a beautiful stunning UI, interactive charts, and AI-driven performance insights.
 
 ![Theme](https://img.shields.io/badge/theme-Deep%20Navy%20%26%20Neon-7C5CFC?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)
@@ -10,13 +10,14 @@ A modern, full-stack web application that fetches any LeetCode user's data and v
 
 ## ✨ Features
 
+- **Multi-Platform Support:** Seamlessly toggle between LeetCode and Codeforces profiles.
 - **Profile Overview:** Global ranking, contest rating, badges, and contribution points.
 - **Problem Stats:** Difficulty breakdown with gradient animated progress bars.
 - **Difficulty Distribution:** Interactive donut chart (Recharts).
 - **Topic Analysis:** Neon-style bar chart tracking top 15 highest-solved problem tags.
 - **Contest History:** Area chart tracking contest rating progression over time.
 - **Submission Heatmap:** GitHub-style continuous activity calendar covering the last 365 days.
-- **AI Insights:** Rule-based performance analysis highlighting strengths, weaknesses, and personalized problem recommendations.
+- **AI Insights:** Gemini-powered performance analysis highlighting strengths, weaknesses, and personalized problem recommendations tailored to the specific platform.
 - **Robust Error Handling:** Sequential API request handling to bypass strict Cloudflare/rate-limit blocks, complete with user-friendly error UI.
 
 ## 🛠️ Tech Stack
@@ -25,7 +26,7 @@ A modern, full-stack web application that fetches any LeetCode user's data and v
 |-------|------------|
 | **Frontend** | React 18, Vite, Tailwind CSS 3, Recharts, Lucide React icons |
 | **Backend** | Vercel Serverless Functions (`api/` directory) & standalone Express.js for local dev |
-| **Data Source** | LeetCode GraphQL API |
+| **Data Source** | LeetCode GraphQL API & Codeforces REST API |
 | **Deployment** | Vercel |
 
 ## 🎨 Theme Details (Maxton Style)
@@ -58,6 +59,13 @@ npm install
 cd ..
 ```
 
+### Setup Environment Variables
+
+Create a `.env` file in the root directory and add your Google Gemini API key to enable AI integrations:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
 ### Running Locally
 
 ```bash
@@ -84,8 +92,10 @@ The project is fully configured for Vercel. Because LeetCode's API aggressively 
 ```
 LeetInsight/
 ├── api/                     # Vercel Serverless Functions
-│   ├── _lib/                # Shared logic (LeetCode GraphQL queries)
-│   └── user.js              # Serverless API endpoint
+│   ├── _lib/                # Shared logic (LeetCode & Codeforces API services, Gemini AI)
+│   ├── user.js              # Serverless API endpoint for LeetCode
+│   ├── codeforces.js        # Serverless API endpoint for Codeforces
+│   └── insights.js          # Serverless API endpoint for Gemini Insights
 ├── public/                  # Static assets
 ├── src/
 │   ├── components/          # Reusable UI components & Charts
