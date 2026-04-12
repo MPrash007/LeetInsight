@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'User data is required in the body' });
         }
 
-        const insightMarkdown = await generateDeepInsights(userData);
+        const insightMarkdown = await generateDeepInsights(userData, userData.platform);
         res.json({ insight: insightMarkdown });
     } catch (err) {
         console.error('Gemini API Error:', err.message);

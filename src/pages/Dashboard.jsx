@@ -14,7 +14,7 @@ import Footer from '../components/Footer';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
 
 export default function Dashboard() {
-    const { username } = useParams();
+    const { platform = 'leetcode', username } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ export default function Dashboard() {
         setError(null);
         setData(null);
 
-        fetchUser(username)
+        fetchUser(platform, username)
             .then((d) => {
                 if (!cancelled) setData(d);
             })
@@ -41,7 +41,7 @@ export default function Dashboard() {
                     } else if (apiError && typeof apiError.message === 'string') {
                         msg = apiError.message;
                         if (apiError.code === '504' || msg.includes('TIMEOUT')) {
-                            msg = 'Request timed out. LeetCode API might be slow. Please try again.';
+                            msg = `Request timed out. ${platform === 'codeforces' ? 'Codeforces' : 'LeetCode'} API might be slow. Please try again.`;
                         }
                     } else if (err.message) {
                         msg = err.message;
@@ -111,7 +111,7 @@ export default function Dashboard() {
                         <Heatmap data={data} />
 
                         {/* AI Insights */}
-                        <AIInsightsCard data={data} />
+                        <AIInsightsCard data={data} platform={platform} />
                     </div>
                 )}
             </main>

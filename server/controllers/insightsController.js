@@ -6,7 +6,7 @@ export const getAiInsights = async (req, res) => {
         if (!userData || !userData.username) {
             return res.status(400).json({ error: 'User data is required' });
         }
-        const insightMarkdown = await generateDeepInsights(userData);
+        const insightMarkdown = await generateDeepInsights(userData, userData.platform);
         res.json({ insight: insightMarkdown });
     } catch (error) {
         console.error('Gemini Error:', error.message);

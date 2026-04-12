@@ -5,6 +5,10 @@
             "destination": "/api/user?username=:username"
         },
         {
+            "source": "/api/codeforces/:username",
+            "destination": "/api/codeforces?username=:username"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

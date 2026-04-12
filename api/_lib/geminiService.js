@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-export async function generateDeepInsights(userData) {
+export async function generateDeepInsights(userData, platform = 'leetcode') {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         throw new Error("GEMINI_API_KEY is not configured on the server.");
@@ -23,8 +23,9 @@ export async function generateDeepInsights(userData) {
         recentContests: userData.contestHistory.slice(-3).map(c => c.rating)
     };
 
+    const platformName = platform === 'codeforces' ? 'Codeforces' : 'LeetCode';
     const prompt = `
-You are an expert competitive programming coach and LeetCode mentor. 
+You are an expert competitive programming coach and ${platformName} mentor. 
 Review the following user statistics for "${summary.username}":
 - Total Solved: ${summary.totalSolved} (Easy: ${summary.difficultyBreakdown.easy}, Medium: ${summary.difficultyBreakdown.medium}, Hard: ${summary.difficultyBreakdown.hard})
 - Contest Rating: ${summary.rating}

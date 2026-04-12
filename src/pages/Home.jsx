@@ -8,12 +8,13 @@ const exampleUsers = ['neal_wu', 'tourist', 'uwi', 'errichto', 'jiangly'];
 
 export default function Home() {
     const [username, setUsername] = useState('');
+    const [platform, setPlatform] = useState('leetcode');
     const navigate = useNavigate();
 
     const handleSearch = (e) => {
         e.preventDefault();
         if (username.trim()) {
-            navigate(`/user/${username.trim()}`);
+            navigate(`/${platform}/${username.trim()}`);
         }
     };
 
@@ -27,7 +28,7 @@ export default function Home() {
                 <div className="animate-fade-in mb-6">
                     <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-lc-accent/10 border border-lc-accent/20 text-lc-accent text-sm font-medium">
                         <Zap className="w-4 h-4" />
-                        Free LeetCode Analytics
+                        Free CP Analytics
                     </span>
                 </div>
 
@@ -35,7 +36,7 @@ export default function Home() {
                 <h1 className="text-5xl md:text-7xl font-extrabold text-center mb-6 animate-fade-in">
                     <span className="text-lc-text">Analyze Your</span>
                     <br />
-                    <span className="gradient-text">LeetCode Journey</span>
+                    <span className="gradient-text">Coding Journey</span>
                 </h1>
 
                 {/* Subtitle */}
@@ -44,12 +45,37 @@ export default function Home() {
                     track contest performance, and get AI-powered improvement tips.
                 </p>
 
-                {/* Search Bar */}
+                {/* Toggle & Search */}
                 <form
                     onSubmit={handleSearch}
-                    className="w-full max-w-xl animate-slide-up"
+                    className="w-full max-w-xl animate-slide-up flex flex-col items-center"
                 >
-                    <div className="relative group">
+                    <div className="flex bg-lc-card/50 backdrop-blur-sm p-1 rounded-xl border border-lc-border mb-6">
+                        <button
+                            type="button"
+                            onClick={() => setPlatform('leetcode')}
+                            className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                platform === 'leetcode'
+                                    ? 'bg-gradient-to-r from-lc-accent to-lc-pink text-white shadow-lg'
+                                    : 'text-lc-text-secondary hover:text-lc-text hover:bg-lc-border/50'
+                            }`}
+                        >
+                            LeetCode
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setPlatform('codeforces')}
+                            className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                platform === 'codeforces'
+                                    ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg'
+                                    : 'text-lc-text-secondary hover:text-lc-text hover:bg-lc-border/50'
+                            }`}
+                        >
+                            Codeforces
+                        </button>
+                    </div>
+
+                    <div className="relative group w-full">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-lc-accent via-lc-pink to-lc-cyan rounded-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-300 blur-sm" />
                         <div className="relative flex items-center bg-lc-card border border-lc-border rounded-2xl overflow-hidden">
                             <Search className="w-5 h-5 text-lc-text-secondary ml-5" />
@@ -57,7 +83,7 @@ export default function Home() {
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter LeetCode username..."
+                                placeholder={`Enter ${platform === 'leetcode' ? 'LeetCode' : 'Codeforces'} username...`}
                                 className="flex-1 bg-transparent text-lc-text px-4 py-4 text-lg outline-none placeholder:text-lc-text-secondary/50"
                                 id="username-search"
                             />
@@ -74,11 +100,11 @@ export default function Home() {
 
                 {/* Example Users */}
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-2 animate-slide-up">
-                    <span className="text-lc-text-secondary text-sm mr-1">Try:</span>
-                    {exampleUsers.map((user) => (
+                    <span className="text-lc-text-secondary text-sm mr-1">Try ({platform}):</span>
+                    {(platform === 'leetcode' ? ['neal_wu', 'uwi', 'errichto'] : ['tourist', 'jiangly', 'Benq']).map((user) => (
                         <button
                             key={user}
-                            onClick={() => navigate(`/user/${user}`)}
+                            onClick={() => navigate(`/${platform}/${user}`)}
                             className="px-3 py-1 rounded-lg bg-lc-card border border-lc-border text-lc-text-secondary text-sm hover:text-lc-accent hover:border-lc-accent/30 transition-all duration-200"
                         >
                             {user}

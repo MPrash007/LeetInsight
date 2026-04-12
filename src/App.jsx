@@ -7,6 +7,8 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/:platform/:username" element={<Dashboard />} />
+                {/* Legacy route */}
                 <Route path="/user/:username" element={<Dashboard />} />
             </Routes>
         </BrowserRouter>

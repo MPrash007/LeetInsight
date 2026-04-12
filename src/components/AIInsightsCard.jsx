@@ -3,7 +3,7 @@ import { Brain, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { generateInsights } from '../services/api';
 
-export default function AIInsightsCard({ data }) {
+export default function AIInsightsCard({ data, platform = 'leetcode' }) {
     const [insight, setInsight] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export default function AIInsightsCard({ data }) {
         setLoading(true);
         setError(null);
         try {
-            const result = await generateInsights(data);
+            const result = await generateInsights(data, platform);
             setInsight(result.insight);
         } catch (err) {
             console.error(err);
@@ -76,7 +76,7 @@ export default function AIInsightsCard({ data }) {
             {!insight && !loading && !error && (
                 <div className="flex-1 w-full flex flex-col items-center justify-center py-8">
                     <p className="text-lc-text-secondary text-sm text-center max-w-sm">
-                        Click the button above to generate a unique AI analysis of your LeetCode profile using Gemini. 
+                        Click the button above to generate a unique AI analysis of your {platform === 'codeforces' ? 'Codeforces' : 'LeetCode'} profile using Gemini. 
                         It will highlight your strengths and recommend exact topics to practice next!
                     </p>
                 </div>

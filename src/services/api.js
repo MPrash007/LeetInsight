@@ -5,13 +5,14 @@ const API = axios.create({
     timeout: 15000,
 });
 
-export async function fetchUser(username) {
-    const { data } = await API.get(`/user/${username}`);
+export async function fetchUser(platform = 'leetcode', username) {
+    const endpoint = platform === 'codeforces' ? `/codeforces/${username}` : `/user/${username}`;
+    const { data } = await API.get(endpoint);
     return data;
 }
 
-export async function generateInsights(userData) {
-    const { data } = await API.post('/insights', userData);
+export async function generateInsights(userData, platform = 'leetcode') {
+    const { data } = await API.post('/insights', { ...userData, platform });
     return data;
 }
 
