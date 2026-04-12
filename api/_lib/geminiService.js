@@ -32,13 +32,16 @@ Review the following user statistics for "${summary.username}":
 - Top tags/strengths: ${summary.strengths.map(s => s.name).join(', ')}
 - Last 3 contest ratings: ${summary.recentContests.join(', ')}
 
-Please provide a highly personalized, encouraging, and actionable 3-paragraph analysis. 
-Format your response using Markdown:
-1. A brief overview of their current skill level and momentum.
-2. What specific topics or difficulty levels they should focus on next to increase their performance/rating.
-3. A specific, actionable tip for their daily progression.
+Please provide a highly personalized, encouraging, and actionable analysis. 
+Format your response using Markdown exactly as follows:
 
-Keep the tone motivating and professional. Speak directly to the user (e.g. "You have built a solid foundation..."). Use bolding for emphasis where appropriate.
+First, write a 1-2 sentence **overview paragraph** summarizing their current skill level and recent momentum. Do not use a bullet point for this paragraph.
+
+Then, provide a bulleted list titled "**🎯 Next Steps & Focus Areas:**" containing:
+- 2-3 specific topics or difficulty levels they should focus on next to increase their rating.
+- 1 specific, actionable daily tip for their immediate practice progression.
+
+Keep the tone motivating and professional. Speak directly to the user (e.g. "You have built a solid foundation..."). Use bolding for emphasis where appropriate and ensure the formatting looks clean.
 `;
 
     const MAX_RETRIES = 3;
