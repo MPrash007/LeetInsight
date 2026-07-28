@@ -1,36 +1,4 @@
-export async function fetchCodeforcesData(username) {
-    const [infoRes, ratingRes, statusRes] = await Promise.all([
-        fetch(`https://codeforces.com/api/user.info?handles=${username}`),
-        fetch(`https://codeforces.com/api/user.rating?handle=${username}`),
-        fetch(`https://codeforces.com/api/user.status?handle=${username}`)
-    ]);
-
-    if (!infoRes.ok) {
-        if (infoRes.status === 400) throw new Error(`User "${username}" not found`);
-        throw new Error('Failed to fetch Codeforces user info');
-    }
-
-    const infoData = await infoRes.json();
-    if (infoData.status !== 'OK') throw new Error(infoData.comment || `User "${username}" not found`);
-
-    const profile = infoData.result[0];
-
-    let contestHistory = [];
-    if (ratingRes.ok) {
-        const rData = await ratingRes.json();
-        if (rData.status === 'OK') {
-            contestHistory = rData.result;
-        }
-    }
-
-    let submissions = [];
-    if (statusRes.ok) {
-        const sData = await statusRes.json();
-        if (sData.status === 'OK') {
-            submissions = sData.result;
-        }
-    }
-
+export function parseCodeforcesUserData(profile, contestHistory = [], submissions = []) {
     const solvedProblems = new Map();
     const allAcceptedSubmissions = [];
     submissions.forEach(sub => {
@@ -83,7 +51,7 @@ export async function fetchCodeforcesData(username) {
     const sortedDays = Object.keys(calendarData).map(Number).sort((a, b) => b - a);
     if (sortedDays.length > 0) {
         const today = new Date();
-        today.setUTCHours(0,0,0,0);
+        today.setUTCHours(0, 0, 0, 0);
         let currentDay = Math.floor(today.getTime() / 1000);
         let yesterday = currentDay - 86400;
 
