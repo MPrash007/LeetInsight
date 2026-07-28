@@ -1,5 +1,5 @@
 import NodeCache from 'node-cache';
-import { fetchCodeforcesData } from '../services/codeforcesService.js';
+import { fetchCodeforcesData } from '../services/codeforces/codeforcesService.js';
 
 const cache = new NodeCache({ stdTTL: 300 }); // 5 min
 

@@ -1,4 +1,4 @@
-import { generateDeepInsights } from '../../api/_lib/geminiService.js';
+import { generateDeepInsights } from '../services/gemini/geminiService.js';
 
 export const getAiInsights = async (req, res) => {
     try {
